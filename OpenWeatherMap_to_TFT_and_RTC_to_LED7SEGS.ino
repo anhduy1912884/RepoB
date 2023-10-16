@@ -55,13 +55,14 @@ toaDo nhietDo ;
 toaDo gio ;
 toaDo doAm ;
 toaDo thoiTiet ;
+toaDo ngay ;
 char * monthName[12] = {" Jan" , " Feb" , " Mar" , " Apr" , " May" , " Jun", " Jul" , " Aug" , " Sep" , " Oct" , " Nov" , " Dec"};
 char * TMdate(char day, char mon, uint16_t year);
 char* thuTrongTuan ;
 
 void setup() {
   tft.initR(INITR_18BLACKTAB);   //  INITR_BLACKTAB initialize a ST7735S chip, black tab
-  //tft.setRotation(4);
+  tft.setRotation(1);
   tft.fillScreen(ST7735_BLACK);
   delay(1000);
 
@@ -91,14 +92,16 @@ void setup() {
 
 void loop() {
   /* VARIABLE            VARIABLE             VARIABLE           VARIABLE            VARIABLE             VARIABLE   */
-nhietDo.x = 57 ;
-nhietDo.y = 50+15 ;
+nhietDo.x = 57 + 15 ;
+nhietDo.y = 50+5 ;
 doAm.x = 30  ;
-doAm.y = 100 ;
+doAm.y = 100-7 ;
 gio.x = 30 ; 
-gio.y = 130 ;
-thoiTiet.x = 1 ;
-thoiTiet.y = 15+15; 
+gio.y = 100+15 ;
+thoiTiet.x = 0 ;
+thoiTiet.y = 15+5; 
+ngay.x = 65+20 ;
+ngay.y = 0 ;
   // Send an HTTP GET request
   if ((millis() - lastTime) > timerDelay) {
     // Check WiFi connection status
@@ -136,8 +139,8 @@ thoiTiet.y = 15+15;
       char * plus = monthName[month - 1] ;
       sprintf(buffer + strlen(buffer), "%s", plus); // Nối plus vào buffer
       tft.setFont(NULL);
-      testdrawtext(thuTrongTuan, 0Xffff , 1 , 65  , 10) ;
-      testdrawtext(buffer, 0Xffff , 1 , 65 +20, 10) ;
+      testdrawtext(thuTrongTuan, 0Xffff , 1 , ngay.x  , ngay.y) ;
+      testdrawtext(buffer, 0Xffff , 1 , ngay.x +20, ngay.y) ;
      
 /* TEMPARATURE    TEMPARATURE       TEMPARATURE       TEMPARATURE       TEMPARATURE       TEMPARATURE   */
       tft.setFont(&FreeSansBold18pt7b);  //    FreeSans9pt7b
