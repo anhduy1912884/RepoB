@@ -1,3 +1,4 @@
+/*Landscape Display*/
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
@@ -63,9 +64,7 @@ char* thuTrongTuan ;
 void setup() {
   tft.initR(INITR_18BLACKTAB);   //  INITR_BLACKTAB initialize a ST7735S chip, black tab
   tft.setRotation(1);
-  tft.fillScreen(ST7735_BLACK);
-  delay(1000);
-
+  delay(500);
   Serial.begin(115200);
 
   WiFi.begin(ssid, password);
@@ -76,9 +75,6 @@ void setup() {
   }
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
-  //Serial.println(WiFi.localIP());
- 
-  //Serial.println("Timer set to 10 seconds (timerDelay variable), it will take 10 seconds before publishing the first reading.");
   rtc.begin();
   display.setBrightness(7); 
  // rtc.set(00, 2 , 20 , 10, 10, 2023);
@@ -108,7 +104,6 @@ ngay.y = 0 ;
     if(WiFi.status()== WL_CONNECTED){
       String serverPath = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + countryCode + "&APPID=" + openWeatherMapApiKey;      
       jsonBuffer = httpGETRequest(serverPath.c_str());
-      // Serial.println(jsonBuffer);
       JSONVar myObject = JSON.parse(jsonBuffer);
       // JSON.typeof(jsonVar) can be used to get the type of the var
       if (JSON.typeof(myObject) == "undefined") {
@@ -155,8 +150,6 @@ ngay.y = 0 ;
       testdrawtext("C" , ST7735_WHITE ,1 , nhietDo.x+43+15 , nhietDo.y -10);
 
       tft.setFont(&FreeSans9pt7b);  // FreeSansBold9pt7b
-      Serial.print("Humidity: ");
-      Serial.println(myObject["main"]["humidity"]);
       double Humid = myObject["main"]["humidity"] ;
       dtostrf(Humid, 3, 0, buffer); 
       sprintf(buffer, "%s%%", buffer); // Sử dụng sprintf để nối chuỗi buffer với "%"
@@ -222,22 +215,14 @@ void testdrawtext(char *text, uint16_t color , uint16_t TextSize , uint16_t ver_
   tft.print(text);
 }
 
-void TFT_clear_all () {
-    tft.fillScreen(ST7735_BLACK);
-}
-
 char * TMdate(char day, char mon, uint16_t year) {
     char * Week[7] = {"Sun ", "Mon ", "Tue ", "Wed ", "Thu ", "Fri ", "Sat "};
     struct tm date = {0}; // Khởi tạo tất cả thành phần của date bằng 0
     date.tm_year = year - 1900; // Năm 2023 (trừ đi 1900)
     date.tm_mon = mon - 1;      // Tháng 10 (trừ đi 1)
     date.tm_mday = day;          // Ngày 7
-
     // Tính thứ trong tuần (0: Chủ Nhật, 1: Thứ Hai, ..., 6: Thứ Bảy)
     std::mktime(&date);
     int dayOfWeek = date.tm_wday;
-    
     return Week[dayOfWeek];
 }
-
-
