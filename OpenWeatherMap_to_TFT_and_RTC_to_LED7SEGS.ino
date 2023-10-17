@@ -57,12 +57,14 @@ toaDo gio ;
 toaDo doAm ;
 toaDo thoiTiet ;
 toaDo ngay ;
+toaDo gioPhut ;
 char * monthName[12] = {" Jan" , " Feb" , " Mar" , " Apr" , " May" , " Jun", " Jul" , " Aug" , " Sep" , " Oct" , " Nov" , " Dec"};
 char * TMdate(char day, char mon, uint16_t year);
 char* thuTrongTuan ;
 
 void setup() {
   tft.initR(INITR_18BLACKTAB);   //  INITR_BLACKTAB initialize a ST7735S chip, black tab
+  tft.fillScreen(ST7735_BLACK);
   tft.setRotation(1);
   delay(500);
   Serial.begin(115200);
@@ -90,14 +92,16 @@ void loop() {
   /* VARIABLE            VARIABLE             VARIABLE           VARIABLE            VARIABLE             VARIABLE   */
 nhietDo.x = 57 + 15 ;
 nhietDo.y = 50+5 ;
-doAm.x = 30  ;
-doAm.y = 100-7 ;
-gio.x = 30 ; 
+doAm.x = 40  ;
+doAm.y = 100-12 ;
+gio.x = 40 ; 
 gio.y = 100+15 ;
 thoiTiet.x = 0 ;
 thoiTiet.y = 15+5; 
-ngay.x = 65+20 ;
+ngay.x = 65+30 ;
 ngay.y = 0 ;
+gioPhut.x = 40  ;
+gioPhut.y =  1  ;
   // Send an HTTP GET request
   if ((millis() - lastTime) > timerDelay) {
     // Check WiFi connection status
@@ -122,13 +126,13 @@ ngay.y = 0 ;
       display.showNumberDecEx(timeString.toInt(), 0b11110000, true);
       delay(500); */
       /* TIME DISPLAY       TIME DISPLAY       TIME DISPLAY      TIME DISPLAY     TIME DISPLAY     TIME DISPLAY     TIME DISPLAY      TIME DISPLAY     TIME DISPLAY  */
-      tft.fillRoundRect(10+1+15 , 1 , 60 , 14, 0, ST7735_BLACK);
+      tft.fillRoundRect(gioPhut.x , gioPhut.y , 48 , 14, 0, ST7735_BLACK);
       tft.setFont(&FreeSans9pt7b);  // FreeSansBold9pt7b   &FreeSans9pt7b
       dtostrf(hour, 2, 0, buffer);
-      testdrawtext(buffer , 0Xffff , 1 , 10+1+18 , 1) ;
+      testdrawtext(buffer , 0Xffff , 1 , 1+ gioPhut.x , gioPhut.y) ;
       dtostrf(min , 2, 0, buffer);
-      testdrawtext(buffer , 0Xffff , 1 , 10+25+18 , 1) ;
-      testdrawtext(":" , 0Xffff , 1 , 10+21+18 , 1) ;
+      testdrawtext(buffer , 0Xffff , 1 , 25+gioPhut.x ,  gioPhut.y) ;
+      testdrawtext(":" , 0Xffff , 1 , 21+gioPhut.x ,  gioPhut.y) ;
       /* DAY DISPLAY          DAY DISPLAY         DAY DISPLAY           DAY DISPLAY           DAY DISPLAY           DAY DISPLAY            */
       dtostrf(day, 2, 0, buffer);
       char * plus = monthName[month - 1] ;
@@ -148,7 +152,7 @@ ngay.y = 0 ;
       tft.setFont(&FreeSans9pt7b);  // FreeSansBold9pt7b
       testdrawtext("o" , ST7735_WHITE ,1 , nhietDo.x+43+6  , nhietDo.y - 3 -10);
       testdrawtext("C" , ST7735_WHITE ,1 , nhietDo.x+43+15 , nhietDo.y -10);
-
+/*
       tft.setFont(&FreeSans9pt7b);  // FreeSansBold9pt7b
       double Humid = myObject["main"]["humidity"] ;
       dtostrf(Humid, 3, 0, buffer); 
@@ -164,7 +168,7 @@ ngay.y = 0 ;
       tft.fillRoundRect(gio.x , gio.y , 60+25, 14, 0, ST7735_BLACK);
       testdrawtext(buffer , ST7735_WHITE ,1 , gio.x , gio.y);
       tft.drawRGBBitmap(gio.x - 20 , gio.y, colorWind , 16 , 16 ); 
-
+*/
       /* DRAW WEATHER   DRAW WEATHER      DRAW WEATHER        DRAW WEATHER      DRAW WEATHER */
       // Lấy thông tin thời tiết từ JSON
       JSONVar weatherData = myObject["weather"][0];
