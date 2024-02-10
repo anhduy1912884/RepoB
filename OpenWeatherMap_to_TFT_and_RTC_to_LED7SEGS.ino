@@ -4,8 +4,9 @@
 #include <WiFiClient.h>
 #include <Arduino_JSON.h>
 #include "weather_image.h"
-#include <Adafruit_GFX.h>      // include Adafruit graphics library
 #include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
+#include <Adafruit_GFX.h>      // include Adafruit graphics library
+
 #include <Fonts/FreeMonoBold12pt7b.h>
 #include <Fonts/FreeMono12pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
@@ -14,16 +15,20 @@
 #include <Fonts/FreeSansBold9pt7b.h>
 #include <Wire.h>
 #include <DS1307.h>
-#include <TM1637Display.h>
+//#include <TM1637Display.h>
 #include <ctime>
 DS1307 rtc;
-TM1637Display display(D1, D2);
+//TM1637Display display(D1, D2);
 
 #include <iostream>
 #include <string>
 
-const char* ssid = "Gggggg";
-const char* password = "25862586";
+//const char* ssid = "A12a.14";
+//const char* password = "0563495007";
+const char* ssid = "Suong Mai";
+const char* password = "07032013";
+//const char* ssid = "Gggggg";
+//const char* password = "25862586";
 
 // Your Domain name with URL path or IP address with path
 String openWeatherMapApiKey = "f9980632671d4621dd517cddae9a7086";
@@ -40,9 +45,9 @@ char buffer[10];
 String jsonBuffer;
 /***********************************************************END WEB **************************************/ 
 // ST7735 TFT module connections
-#define TFT_RST   D4     // TFT RST pin is connected to NodeMCU pin D4 (GPIO2)
-#define TFT_CS    D3     // TFT CS  pin is connected to NodeMCU pin D4 (GPIO0)
-#define TFT_DC    D8     // TFT DC  pin is connected to NodeMCU pin D4 (GPIO4)
+#define TFT_RST   2     // TFT RST pin is connected to NodeMCU pin D4 (GPIO2)
+#define TFT_CS    0     // TFT CS  pin is connected to NodeMCU pin D3 (GPIO0)
+#define TFT_DC    15     // TFT DC  pin is connected to NodeMCU pin D8 (GPIO15)
 // initialize ST7735 TFT library with hardware SPI module
 // SCK (CLK) ---> NodeMCU pin D5 (GPIO14)
 // MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
@@ -78,8 +83,8 @@ void setup() {
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   rtc.begin();
-  display.setBrightness(7); 
- // rtc.set(00, 2 , 20 , 10, 10, 2023);
+  //display.setBrightness(7); 
+  //rtc.set(00, 54 , 23 , 9, 2, 2024);
   rtc.stop();
   rtc.start();
   uint8_t sec, min, hour, day, month;
@@ -98,10 +103,12 @@ gio.x = 40 ;
 gio.y = 100+15 ;
 thoiTiet.x = 0 ;
 thoiTiet.y = 15+5; 
+
 ngay.x = 65+30 ;
 ngay.y = 0 ;
 gioPhut.x = 40  ;
 gioPhut.y =  1  ;
+
   // Send an HTTP GET request
   if ((millis() - lastTime) > timerDelay) {
     // Check WiFi connection status
@@ -119,13 +126,14 @@ gioPhut.y =  1  ;
       uint16_t year;
       rtc.get(&sec, &min, &hour, &day, &month, &year);
       bool isNight = (hour >= 17 && hour <=23 ) || (hour >= 0 && hour <= 6) ;
-      /*
+      
       if (min == 0 ) hour = hour * 100 ;
       if (min > 0 && min < 10)  hour = hour*10 ;
       String timeString = String(hour) + String(min);
-      display.showNumberDecEx(timeString.toInt(), 0b11110000, true);
-      delay(500); */
+      //display.showNumberDecEx(timeString.toInt(), 0b11110000, true);
+      delay(500); 
       /* TIME DISPLAY       TIME DISPLAY       TIME DISPLAY      TIME DISPLAY     TIME DISPLAY     TIME DISPLAY     TIME DISPLAY      TIME DISPLAY     TIME DISPLAY  */
+      
       tft.fillRoundRect(gioPhut.x , gioPhut.y , 48 , 14, 0, ST7735_BLACK);
       tft.setFont(&FreeSans9pt7b);  // FreeSansBold9pt7b   &FreeSans9pt7b
       dtostrf(hour, 2, 0, buffer);
@@ -133,7 +141,9 @@ gioPhut.y =  1  ;
       dtostrf(min , 2, 0, buffer);
       testdrawtext(buffer , 0Xffff , 1 , 25+gioPhut.x ,  gioPhut.y) ;
       testdrawtext(":" , 0Xffff , 1 , 21+gioPhut.x ,  gioPhut.y) ;
+      
       /* DAY DISPLAY          DAY DISPLAY         DAY DISPLAY           DAY DISPLAY           DAY DISPLAY           DAY DISPLAY            */
+      
       dtostrf(day, 2, 0, buffer);
       char * plus = monthName[month - 1] ;
       sprintf(buffer + strlen(buffer), "%s", plus); // Nối plus vào buffer
@@ -175,6 +185,7 @@ gioPhut.y =  1  ;
       String weatherMain = JSON.stringify(weatherData["main"]);
       // In thông tin thời tiết ra màn hình
       tft.fillRoundRect( thoiTiet.x , thoiTiet.y , 60, 60 , 0, ST7735_BLACK);
+      
       if      (weatherMain == "\"Rain\"")  tft.drawRGBBitmap(thoiTiet.x , thoiTiet.y , colorRain , 64, 64) ;
       else if (weatherMain == "\"Clouds\"" && !isNight ) tft.drawRGBBitmap(thoiTiet.x , thoiTiet.y, colorCloudy , 64, 64) ;
       else if (weatherMain == "\"Clouds\"" && isNight ) tft.drawRGBBitmap(thoiTiet.x , thoiTiet.y, colorCloudNight , 64, 64) ;
@@ -182,6 +193,7 @@ gioPhut.y =  1  ;
         if (isNight) tft.drawRGBBitmap(thoiTiet.x , thoiTiet.y, colorFineNight , 64, 64) ;
         else tft.drawRGBBitmap(thoiTiet.x , thoiTiet.x , colorFine , 64, 64) ;
       }
+      
     }
     else {
       Serial.println("WiFi Disconnected");
